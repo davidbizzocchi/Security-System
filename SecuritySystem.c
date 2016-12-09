@@ -732,6 +732,7 @@ void UpdateDT() {
 	temp = temp * 1.8 + 32;	// convert to fahrenheit
 	x = x + 30;
 	if (temp >= 110) {
+		AlarmArmed = true;
 		ArmAlarm();
 		AlarmTriggered = true;
 	}
@@ -808,7 +809,7 @@ bool PasswordCheck(char message[22]) {
 		WDT_A_clearTimer();				// clear watch dog timer
 		scanKeys();						// read in and store keys
 		DetermineChar();		// determines character based on key scanned in
-		if (outputChar != ' ' && outputChar != '*') {		// if input is determined
+		if (outputChar != ' ' && outputChar != '*') {// if input is determined
 			passWordIndex = StoreAttemptChar(outputChar, passWordIndex);
 			ST7735_DrawCharS(x, 70, outputChar, ST7735_WHITE, ST7735_BLACK, 2);	// print key input
 			x += 15;
@@ -1021,7 +1022,7 @@ void T32_INT1_IRQHandler(void) {
 	if (AlarmArmed) {
 		InterruptIterations++;
 		CheckSensorStatus();
-		if (isDoorOpen || isWindowOpen) {
+		if (isDoorOpen || isWindowOpen || (temp > 110)) {
 			AlarmTriggered = true;
 		}
 		if (AlarmTriggered) {
